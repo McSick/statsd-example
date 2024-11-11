@@ -1,0 +1,27 @@
+receivers:
+  statsd:
+    endpoint: "0.0.0.0:8125"
+    aggregation_interval: 20s
+
+
+processors:
+  batch:
+
+exporters:
+  debug:
+    verbosity: detailed
+  otlp:
+    endpoint: "api.honeycomb.io:443" # US instance
+    #endpoint: "api.eu1.honeycomb.io:443" # EU instance
+    headers:
+      "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
+      "x-honeycomb-dataset": "statsd"
+
+
+
+service:
+  pipelines:
+    metrics:
+      receivers: [statsd ]
+      processors: [batch]
+      exporters: [otlp]
